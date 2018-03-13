@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Handwritten Equation Solver</strong> <small></small></div>
+        <div class="panel-body">
+
+          <h4>Browse for Image </h4>
+          <form method="post" enctype="multipart/form-data" id="js-upload-form">
+          {% csrf_token %}
+            <div class="form-inline">
+              <div class="form-group">
+                <input type="file" name="img" id="js-upload-files">
+              </div>
+              <button type="submit" class="btn btn-sm btn-primary" id="js-upload-submit">Upload files</button>
+            </div>
+          </form>
+
+             {% if uploaded_file_url %}
+                 <hr>
+                <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+                  <img alt="Equation" src="{{ uploaded_file_url }}" width="30%">
+              {% endif %}
+            {% comment %}TODO : Take picture from Camera{% endcomment %}
+            {% comment %}TODO : Display output here{% endcomment %}
+
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+
+{% endblock %}
