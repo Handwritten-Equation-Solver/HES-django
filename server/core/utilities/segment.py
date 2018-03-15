@@ -1,10 +1,15 @@
 import cv2
 import numpy as np
 import os.path
+import math
 
 
+ymin,ymax,xmax,xmin = 0,0,0,0
 
 def img_segment(file):
+    
+    global ymax,ymin,xmax,xmin
+    
     print("Segmenting " + file + "...")
     path=os.path.join("media",file)
     im = cv2.imread(path)
@@ -32,7 +37,8 @@ def img_segment(file):
             if gray_image[i][j] <= 123:
                 write_flag = True
 
-                yjump,xmax,xmin = dfs(i,j)
+                # yjump,xmax,xmin = 
+                yjump = dfs(i,j)
                 max_jump = int(yjump*0.5)
                 if max_jump != 0: #And symbol is not square root -> Has to be dealt seperately
                     j += max_jump
@@ -45,8 +51,15 @@ def img_segment(file):
         if write_flag:
             write_flag = False
             flag += 1
+            print("Storing seg" + str(flag))
+            print("x : ",ymin,ymax)
+            print("y : ",xmin,xmax)
+            
             seg_path = os.path.join(folder_path,str(flag)+"seg_"+ name)
-            cv2.imwrite(seg_path,output_image)
+            output_image = output_image[xmin:xmax, ymin:ymax]
+            pad = 50 # pads each side with 50 pixels
+            output_image = cv2.copyMakeBorder(output_image,pad,pad,pad,pad,cv2.BORDER_CONSTANT,value=[255,255,255])
+            cv2.imwrite(seg_path,output_image)            
             output_image = np.full((gray_image.shape[0], gray_image.shape[1]), 255)
             segmented_image_list.append(seg_path)
 
@@ -54,9 +67,8 @@ def img_segment(file):
 
 def dfs(a,b):
 #Iterative
-
-    ymin = b
-    ymax = b
+    global ymax,ymin,xmax,xmin
+    ymin,ymax = b,b
     xmax,xmin = a,a
 
     stack = []
@@ -65,8 +77,11 @@ def dfs(a,b):
         x = stack[-1][0]
         y = stack[-1][1]
 
-        if ymax < y:
-            ymax = y
+        # if ymax < y:
+        #     ymax = y
+        ymax = max(y, ymax)
+        ymin = min(y, ymin)
+
         xmax = max(x, xmax)
         xmin = min(x, xmin)
 
@@ -81,5 +96,5 @@ def dfs(a,b):
                 for j in range(-1,2):
                     if i+x>=0 and i+x<gray_image.shape[0] and y+j>=0 and y+j<gray_image.shape[1] :
                         stack.append((x+i,y+j))
-
-    return (ymax-ymin),xmax,xmin
+    
+    return (ymax-ymin)
