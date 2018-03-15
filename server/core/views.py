@@ -32,6 +32,8 @@ def home(request):
         print(segmented_image_list)
 
         # TODO []: Integrate Recognizer module
+
+        
         # TODO []: JSON array with image_path,prediction,min,max
         # TODO []: Algorithm to parse equation in format need by MATH engine
         # TODO []: Pass to Math Engine
@@ -39,6 +41,7 @@ def home(request):
 
         return render(request, 'core/home.html', {
             'uploaded_file_url': path
+            #TODO [] : Return solutions
         })
 
     return render(request, 'core/home.html')
