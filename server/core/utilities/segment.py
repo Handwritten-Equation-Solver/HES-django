@@ -5,6 +5,8 @@ import math
 
 
 ymin,ymax,xmax,xmin = 0,0,0,0
+xminCrop, yminCrop = 100000, 100000
+xmaxCrop, ymaxCrop = 0, 0
 
 
 def img_segment(file):
@@ -73,6 +75,13 @@ def img_segment(file):
 
                 # yjump,xmax,xmin = 
                 yjump = dfs(i,j)
+
+                global xminCrop, xmaxCrop, yminCrop, ymaxCrop
+                xminCrop = min(xminCrop, xmin)
+                yminCrop = min(yminCrop, ymin)
+                xmaxCrop = max(xmaxCrop, xmax)
+                ymaxCrop = max(ymaxCrop, ymax)
+
                 max_jump = int(yjump*0.5)
                 if max_jump != 0: #And symbol is not square root -> Has to be dealt seperately
                     j += max_jump
@@ -91,7 +100,7 @@ def img_segment(file):
             print("y : ",xmin,xmax)
             
             seg_path = os.path.join(folder_path,str(flag)+"seg_"+ name)
-            output_image = output_image[xmin:xmax, ymin:ymax]
+            output_image = output_image[xminCrop:xmaxCrop, yminCrop:ymaxCrop]
 
             ydiff = xmax-xmin
             xdiff = ymax-ymin
@@ -111,6 +120,9 @@ def img_segment(file):
             cv2.imwrite(seg_path,output_image)            
             output_image = np.full((gray_image.shape[0], gray_image.shape[1]), 255)
             segmented_image_list.append(seg_path)
+
+            xminCrop, yminCrop = 100000, 100000
+            xmaxCrop, ymaxCrop = 0, 0
 
     return segmented_image_list
 
