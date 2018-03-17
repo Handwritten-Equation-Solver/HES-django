@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from .utilities.segment import img_segment
+from .utilities.keras_model.predict import predict_image
 # from sympy.solvers import solve #Sympy math solver
 import os.path
 
@@ -24,19 +25,16 @@ def home(request):
         #uploaded_file_url = fs.url(file)
         path = os.path.join("media",file)
 
-        #Segment Image here
+        #Returns list of square segmented image paths
         segmented_image_list = img_segment(file)
-        #Returns list of paths of segmented images
-
-        # TODO [x]: In segment.py store min and max y co-ordinate of each segment to compare with other algos
         print(segmented_image_list)
 
-        # TODO []: Integrate Recognizer module
+        predicted_list = []
+        #Print the recognised character
+        for img in segmented_image_list:
+            predicted_list.append(predict_image(img))
 
-        
-        # TODO []: JSON array with image_path,prediction,min,max
-        # TODO []: Algorithm to parse equation in format need by MATH engine
-        # TODO []: Pass to Math Engine
+        # TODO []: Pass predicted list to solver.py
         # TODO []: Delete the media/<eqn> folder
 
         return render(request, 'core/home.html', {

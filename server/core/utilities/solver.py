@@ -130,6 +130,5 @@ def parse(charList):
 	print(eqn[::-1])
 
 # TODO : Parse the predicted characters into required format and return the solutions
-def solve(eqn):
-    print("Solve using Sympy")
-    coeff = parse(eqn)
+eqn = input()
+parse(eqn)
