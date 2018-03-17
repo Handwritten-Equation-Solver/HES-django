@@ -57,8 +57,19 @@ def img_segment(file):
             
             seg_path = os.path.join(folder_path,str(flag)+"seg_"+ name)
             output_image = output_image[xmin:xmax, ymin:ymax]
-            pad = 50 # pads each side with 50 pixels
-            output_image = cv2.copyMakeBorder(output_image,pad,pad,pad,pad,cv2.BORDER_CONSTANT,value=[255,255,255])
+
+            xdiff = xmax-xmin
+            ydiff = ymax-ymin
+
+            pad1 = 50 # pads each side with 50 pixels
+            pad2 = 50
+
+            if xdiff>ydiff:
+                pad1 += xdiff-ydiff
+            else:
+                pad2 += ydiff-xdiff;
+
+            output_image = cv2.copyMakeBorder(output_image,pad1,pad1,pad2,pad2,cv2.BORDER_CONSTANT,value=[255,255,255])
             cv2.imwrite(seg_path,output_image)            
             output_image = np.full((gray_image.shape[0], gray_image.shape[1]), 255)
             segmented_image_list.append(seg_path)
