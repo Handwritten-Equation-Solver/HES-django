@@ -6,6 +6,7 @@ import math
 
 ymin,ymax,xmax,xmin = 0,0,0,0
 
+
 def img_segment(file):
     
     global ymax,ymin,xmax,xmin
@@ -22,12 +23,45 @@ def img_segment(file):
 
     gray_path = os.path.join(folder_path, "gray_"+name)
     print("Storing grayscale to.."+gray_path)
-    cv2.imwrite(gray_path, gray_image)
+    
+    im = gray_image
+    mini = 255
+    maxi = 0  
+    j=0
+    while j < im.shape[1]:
+        i=0
+        while i<im.shape[0]:
+            if im[i][j] > maxi:
+                maxi = im[i][j]
+            if im[i][j] < mini:
+                mini = im[i][j]
+            i = i +1
+        j = j + 1
+    avg = (maxi + mini)/2
+    j=0
+    while j < im.shape[1]:
+        i=0
+        while i<im.shape[0]:
+            if im[i][j] <avg:
+                im[i][j] = 0
+            else:
+                im[i][j] = 255
+            i = i+1
+        j = j+1
+
+    
+
+    gray_image = im
+    
+    cv2.imwrite(gray_path, gray_image)    
+
     segmented_image_list = []
     flag = 0
     write_flag = False
     global output_image
     output_image = np.full((gray_image.shape[0], gray_image.shape[1]), 255)
+
+    print("conversion done")
 
     j=0
     while j < gray_image.shape[1]:
@@ -49,6 +83,7 @@ def img_segment(file):
         j+=1
 
         if write_flag:
+            print("reached write_flag")
             write_flag = False
             flag += 1
             print("Storing seg" + str(flag))
@@ -110,5 +145,4 @@ def dfs(a,b):
                 for j in range(-1,2):
                     if i+x>=0 and i+x<gray_image.shape[0] and y+j>=0 and y+j<gray_image.shape[1] :
                         stack.append((x+i,y+j))
-    
     return (ymax-ymin)

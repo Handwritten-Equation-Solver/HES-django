@@ -24,7 +24,7 @@ def home(request):
         print(file + " Received")
         #uploaded_file_url = fs.url(file)
         path = os.path.join("media",file)
-
+        
         #Returns list of square segmented image paths
         segmented_image_list = img_segment(file)
         print(segmented_image_list)

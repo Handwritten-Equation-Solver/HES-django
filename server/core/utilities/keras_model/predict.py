@@ -15,13 +15,13 @@ from keras.optimizers import RMSprop
 from keras.callbacks import ModelCheckpoint, Callback, EarlyStopping
 from keras.utils import np_utils
 from keras.preprocessing.image import ImageDataGenerator
-
+import tensorflow as tf
+from keras import backend as K
 import pickle
 optimizer = RMSprop(lr=1e-3)
 objective = 'categorical_crossentropy'
 
 def mathsymbol():
-    #  create model
     model = Sequential()
     model.add(Conv2D(32, (5, 5), input_shape=(45, 45, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -35,6 +35,7 @@ def mathsymbol():
 
 
 def predict_image(path):
+    K.clear_session()
     model = mathsymbol()
     dir_path = os.path.dirname(os.path.realpath(__file__))
     model.load_weights(os.path.join(dir_path,'weights.h5'))
